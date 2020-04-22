@@ -23,8 +23,8 @@ public class Film {
     @Field(type = FieldType.Text)
     private String imageUrl;
 
-    @Field(type = FieldType.Integer)
-    private int score;
+    @Field(type = FieldType.Double)
+    private double score;
 
     @Field(type = FieldType.Text)
     private String stars;
@@ -61,4 +61,26 @@ public class Film {
 
     @Field(type = FieldType.Text)
     private String anotherName;
+
+    public Film() {
+    }
+
+    public Film(Long id, String name, String imageUrl, double score, String stars, String tags, String info, String director, String scriptWriters, String actors, String type, String area, String language, String date, String time, String anotherName) {
+        this.id = id;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.score = score;
+        this.stars = stars;
+        this.tags = tags;
+        this.info = info;
+        this.director = director;
+        this.scriptWriters = scriptWriters;
+        this.actors = actors;
+        this.type = type;
+        this.area = area;
+        this.language = language;
+        this.date = date;
+        this.time = time;
+        this.anotherName = anotherName;
+    }
 }

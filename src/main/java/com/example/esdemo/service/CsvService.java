@@ -19,7 +19,7 @@ public class CsvService {
         List<List<String>> list = ReadCSV.readCSV(filePath, hasTitle, encoding);
         List<Film> response = new ArrayList<>();
         for( List<String> row : list){
-            Film templeFilm = new Film();
+//            Film templeFilm = new Film();
 //            templeFilm.set
         }
 

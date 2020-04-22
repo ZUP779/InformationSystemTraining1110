@@ -1,5 +1,6 @@
 package com.example.esdemo.Controller;
 
+import com.example.esdemo.model.Film;
 import com.example.esdemo.service.EsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,15 @@ public class TestController {
     EsService esService;
 
     @GetMapping("/test")
-    public void testCreate(){
-        System.out.println("test");
+    public void testCreateIndex(){
         esService.createIndex();
     }
 
+    @GetMapping("/create")
+    public void testAddData(){
+        Film film1 = new Film(1L, "test1", "test", 1.0, "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test");
+        Film film2 = new Film(2L, "test2", "test", 1.0, "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test");
+        esService.addFilm(film1);
+        esService.addFilm(film2);
+    }
 }
