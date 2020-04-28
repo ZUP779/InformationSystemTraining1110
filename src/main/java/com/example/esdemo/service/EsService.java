@@ -2,11 +2,13 @@ package com.example.esdemo.service;
 
 import com.example.esdemo.model.Film;
 import com.example.esdemo.repo.FilmRepository;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
@@ -43,13 +45,54 @@ public class EsService {
         filmRepository.save(film);
     }
 
-    public List<Film> findFilmsByName(String name){
-        return filmRepository.findByName(name);
+    public List<Film> findFilmsByTitle(String name){
+        return filmRepository.findByTitle(name);
     }
 
-    public Iterator<Film> findFilmsMatchName(String name){
-        MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery("name", name);
+    public Iterator<Film> findFilmsMatchTitle(String title){
+        MatchQueryBuilder queryBuilder = QueryBuilders.matchQuery("title", title);
         Iterable<Film> films = filmRepository.search(queryBuilder);
         return films.iterator();
+    }
+
+    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, double rating){
+        if( title == "" && summary == "" && tags == "" && actors == "" && rating == -1)
+            return null;
+
+//        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+//
+//        if( title != "" )
+//            queryBuilder.withQuery(QueryBuilders.matchQuery("title",title));
+//        if( summary !="")
+//            queryBuilder.withQuery(QueryBuilders.matchQuery("summary",summary));
+//        if( tags != "")
+//            queryBuilder.withQuery(QueryBuilders.matchQuery("tags",tags));
+//        if( actors != "")
+//            queryBuilder.withQuery(QueryBuilders.matchQuery("actors",actors));
+//        if( rating != -1)
+//            queryBuilder.withQuery(QueryBuilders.matchQuery("rating",rating));
+//
+//        Iterable<Film> films = filmRepository.search(queryBuilder.build());
+        BoolQueryBuilder queryBuilder= QueryBuilders.boolQuery();
+
+        if( title != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("title", title));
+        }
+        if( summary != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("summary", summary));
+        }
+        if( tags != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("tags", tags));
+        }
+        if( actors != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("actors", actors));
+        }
+        if( rating != -1) {
+            queryBuilder.must(QueryBuilders.matchQuery("rating", rating));
+        }
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withQuery(queryBuilder)
+                .build();
+        return elasticsearchTemplate.queryForList(searchQuery,Film.class);
     }
 }

@@ -17,70 +17,78 @@ public class Film {
     @Id
     private Long id;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word")
-    private String name;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String title;
 
     @Field(type = FieldType.Text)
     private String imageUrl;
 
+    @Field(type = FieldType.Text)
+    private String imagePath;
+
     @Field(type = FieldType.Double)
-    private double score;
+    private double rating;
+
+    @Field(type = FieldType.Integer)
+    private int ratingCount;
 
     @Field(type = FieldType.Text)
-    private String stars;
+    private String scoreRatio;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String tags;
 
-    @Field(type = FieldType.Text)
-    private String info;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String summary;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String director;
 
-    @Field(type = FieldType.Text)
-    private String scriptWriters;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String author;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String actors;
 
-    @Field(type = FieldType.Text)
-    private String type;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String movieType;
 
-    @Field(type = FieldType.Text)
-    private String area;
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String location;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String language;
 
     @Field(type = FieldType.Text)
-    private String date;
+    private String releaseDate;
 
-    @Field(type = FieldType.Text)
-    private String time;
+    @Field(type = FieldType.Integer)
+    private int duration;
 
-    @Field(type = FieldType.Text)
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String anotherName;
 
     public Film() {
     }
 
-    public Film(Long id, String name, String imageUrl, double score, String stars, String tags, String info, String director, String scriptWriters, String actors, String type, String area, String language, String date, String time, String anotherName) {
+    public Film(Long id, String title, String imageUrl, String imagePath, double rating, int ratingCount, String scoreRatio, String tags, String summary, String director, String author, String actors, String movieType, String location, String language,  String releaseDate, int duration, String anotherName) {
         this.id = id;
-        this.name = name;
+        this.title = title;
         this.imageUrl = imageUrl;
-        this.score = score;
-        this.stars = stars;
+        this.imagePath = imagePath;
+        this.rating = rating;
+        this.ratingCount = ratingCount;
+        this.scoreRatio = scoreRatio;
         this.tags = tags;
-        this.info = info;
+        this.summary = summary;
         this.director = director;
-        this.scriptWriters = scriptWriters;
+        this.author = author;
         this.actors = actors;
-        this.type = type;
-        this.area = area;
+        this.movieType = movieType;
+        this.location = location;
         this.language = language;
-        this.date = date;
-        this.time = time;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
         this.anotherName = anotherName;
     }
 }

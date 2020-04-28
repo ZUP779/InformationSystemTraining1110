@@ -11,5 +11,5 @@ import java.util.List;
  * Description:
  */
 public interface FilmRepository extends ElasticsearchRepository<Film,Long> {
-    List<Film> findByName(String name);
+    List<Film> findByTitle(String title);
 }

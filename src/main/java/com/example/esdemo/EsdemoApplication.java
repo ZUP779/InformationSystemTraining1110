@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
-public class EsdemoApplication {
+public class EsdemoApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(EsdemoApplication.class, args);
