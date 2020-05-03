@@ -5,6 +5,8 @@ import com.example.esdemo.repo.FilmRepository;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -59,20 +61,6 @@ public class EsService {
         if( title == "" && summary == "" && tags == "" && actors == "" && rating == -1)
             return null;
 
-//        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-//
-//        if( title != "" )
-//            queryBuilder.withQuery(QueryBuilders.matchQuery("title",title));
-//        if( summary !="")
-//            queryBuilder.withQuery(QueryBuilders.matchQuery("summary",summary));
-//        if( tags != "")
-//            queryBuilder.withQuery(QueryBuilders.matchQuery("tags",tags));
-//        if( actors != "")
-//            queryBuilder.withQuery(QueryBuilders.matchQuery("actors",actors));
-//        if( rating != -1)
-//            queryBuilder.withQuery(QueryBuilders.matchQuery("rating",rating));
-//
-//        Iterable<Film> films = filmRepository.search(queryBuilder.build());
         BoolQueryBuilder queryBuilder= QueryBuilders.boolQuery();
 
         if( title != null) {
@@ -95,4 +83,12 @@ public class EsService {
                 .build();
         return elasticsearchTemplate.queryForList(searchQuery,Film.class);
     }
+
+//    public List<String> getSuggests(String keyword){
+//        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion("suggest");
+//        completionSuggestionBuilder.prefix(keyword);
+//        completionSuggestionBuilder.skipDuplicates(true);
+//
+//
+//    }
 }

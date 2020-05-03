@@ -1,10 +1,17 @@
 package com.example.esdemo.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.CompletionField;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.core.completion.Completion;
+
+import java.io.Serializable;
 
 /**
  * Author: ZUP779
@@ -12,13 +19,21 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  * Description:
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Document(indexName = "film", type = "docs")
-public class Film {
+public class Film  implements Serializable {
+    private static final long serialVersionUID = 779L;
+
     @Id
+    @Field(type = FieldType.Long)
     private Long id;
 
     @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String title;
+
+//    @CompletionField(analyzer="ik_max_word",searchAnalyzer="ik_max_word")
+//    private Completion title;
 
     @Field(type = FieldType.Text)
     private String imageUrl;
@@ -68,27 +83,4 @@ public class Film {
     @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String anotherName;
 
-    public Film() {
-    }
-
-    public Film(Long id, String title, String imageUrl, String imagePath, double rating, int ratingCount, String scoreRatio, String tags, String summary, String director, String author, String actors, String movieType, String location, String language,  String releaseDate, int duration, String anotherName) {
-        this.id = id;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.imagePath = imagePath;
-        this.rating = rating;
-        this.ratingCount = ratingCount;
-        this.scoreRatio = scoreRatio;
-        this.tags = tags;
-        this.summary = summary;
-        this.director = director;
-        this.author = author;
-        this.actors = actors;
-        this.movieType = movieType;
-        this.location = location;
-        this.language = language;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.anotherName = anotherName;
-    }
 }
