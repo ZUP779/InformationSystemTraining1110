@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: ZUP779
@@ -43,6 +44,7 @@ public class CsvService {
             templeFilm.setSummary(row.get(14));
             templeFilm.setTags(row.get(15));
             templeFilm.setTitle(row.get(16));
+            templeFilm.setTitleSuggest(row.get(16));
             response.add(templeFilm);
             System.out.println(templeFilm);
         }

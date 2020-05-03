@@ -4,6 +4,7 @@ import com.example.esdemo.model.Film;
 import com.example.esdemo.model.TestFilm;
 import com.example.esdemo.repo.TestFilmRepo;
 import com.example.esdemo.service.EsService;
+import io.swagger.annotations.Api;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.suggest.Suggest;
@@ -25,6 +26,7 @@ import java.util.Set;
  * Date:   2020/4/21 22:24
  * Description:
  */
+@Api(hidden = true)
 @RestController
 public class TestController {
     @Autowired
@@ -46,7 +48,7 @@ public class TestController {
         testFilmRepo.save(t3);
     }
 
-    @GetMapping("/getSuggest")
+    @GetMapping("/getTestSuggest")
     public List<String> getSuggest(){
         String suggestField = "name";
         String suggestValue = "奥";
@@ -106,7 +108,8 @@ public class TestController {
 //        Film film2 = new Film(2L, "test2", "test", 1.0, "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test", "test");
 //        esService.addFilm(film1);
 //        esService.addFilm(film2);
-        esService.createIndex();
+
+//        esService.createIndex();
         esService.addCsv2Es("src/main/resources/test.csv",true,"UTF-8");
     }
 }

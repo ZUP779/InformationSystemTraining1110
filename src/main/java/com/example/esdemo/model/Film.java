@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "film", type = "docs")
+@Document(indexName = "film", type = "_doc")
 public class Film  implements Serializable {
     private static final long serialVersionUID = 779L;
 
@@ -29,8 +29,11 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Long)
     private Long id;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String title;
+
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    private String titleSuggest;
 
 //    @CompletionField(analyzer="ik_max_word",searchAnalyzer="ik_max_word")
 //    private Completion title;
@@ -50,28 +53,28 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Text)
     private String scoreRatio;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String tags;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String summary;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String director;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String author;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String actors;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String movieType;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String location;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String language;
 
     @Field(type = FieldType.Text)
@@ -80,7 +83,96 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Integer)
     private int duration;
 
-    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String anotherName;
 
 }
+/*
+*
+{
+  "mappings": {
+    "properties": {
+      "id": {
+        "type": "long"
+      },
+      "title": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "titleSuggest": {
+        "type": "completion",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "imageUrl": {
+        "type": "text"
+      },
+      "imagePath": {
+        "type": "text"
+      },
+      "rating": {
+        "type": "double"
+      },
+      "ratingCount": {
+        "type": "integer"
+      },
+      "scoreRatio": {
+        "type": "text"
+      },
+      "tags": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "summary": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "director": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "author": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "actors": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "movieType": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "location": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "language": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      },
+      "releaseDate": {
+        "type": "text"
+      },
+      "duration": {
+        "type": "integer"
+      },
+      "anotherName": {
+        "type": "text",
+        "analyzer": "ik_max_word",
+        "search_analyzer": "ik_max_word"
+      }
+    }
+  }
+}
+*
+* */

@@ -2,19 +2,24 @@ package com.example.esdemo.service;
 
 import com.example.esdemo.model.Film;
 import com.example.esdemo.repo.FilmRepository;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.suggest.SuggestBuilders;
+import org.elasticsearch.search.suggest.Suggest;
+import org.elasticsearch.search.suggest.SuggestBuilder;
+import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Author: ZUP779
@@ -23,6 +28,9 @@ import java.util.List;
  */
 @Service
 public class EsService {
+
+    private Logger logger = LoggerFactory.getLogger(EsService.class);
+
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
     @Autowired
@@ -84,11 +92,59 @@ public class EsService {
         return elasticsearchTemplate.queryForList(searchQuery,Film.class);
     }
 
-//    public List<String> getSuggests(String keyword){
-//        CompletionSuggestionBuilder completionSuggestionBuilder = SuggestBuilders.completionSuggestion("suggest");
-//        completionSuggestionBuilder.prefix(keyword);
-//        completionSuggestionBuilder.skipDuplicates(true);
-//
-//
-//    }
+
+    public List<String> getSuggest(String suggestField, String suggestValue){
+//        String suggestField = "name";
+//        String suggestValue = "奥";
+        Integer suggestMaxCount = 10;
+
+        String suggestName = "FilmSuggest";
+        String indexName = "film";
+        String typeName = "_doc";
+
+        CompletionSuggestionBuilder completionSuggestionBuilder = new CompletionSuggestionBuilder(suggestField).prefix(suggestValue).size(suggestMaxCount);
+        SuggestBuilder suggestBuilder = new SuggestBuilder();
+        suggestBuilder.addSuggestion(suggestName, completionSuggestionBuilder);
+
+        SearchRequestBuilder requestBuilder = elasticsearchTemplate.getClient().prepareSearch(indexName).setTypes(typeName).suggest(suggestBuilder);
+        logger.info(requestBuilder.toString());
+        //        System.out.println(requestBuilder.toString());
+
+        SearchResponse response = requestBuilder.get();
+        Suggest suggest = response.getSuggest();
+
+        Set<String> suggestSet = new HashSet<>();
+        int maxSuggest = 0;
+        if (suggest != null) {
+            Suggest.Suggestion result = suggest.getSuggestion(suggestName);//获取suggest,name任意string
+            for (Object term : result.getEntries()) {
+
+                if (term instanceof CompletionSuggestion.Entry) {
+                    CompletionSuggestion.Entry item = (CompletionSuggestion.Entry) term;
+                    if (!item.getOptions().isEmpty()) {
+                        //若item的option不为空,循环遍历
+                        for (CompletionSuggestion.Entry.Option option : item.getOptions()) {
+                            String tip = option.getText().toString();
+                            if (!suggestSet.contains(tip)) {
+                                suggestSet.add(tip);
+                                ++maxSuggest;
+                            }
+                        }
+                    }
+                }
+                if (maxSuggest >= suggestMaxCount) {
+                    break;
+                }
+            }
+        }
+
+        List<String> suggests = Arrays.asList(suggestSet.toArray(new String[]{}));
+
+        suggests.forEach((s)->{
+//            System.out.println(s);
+            logger.info(s);
+        });
+
+        return	 suggests;
+    }
 }
