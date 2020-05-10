@@ -14,10 +14,12 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 
@@ -35,6 +37,9 @@ public class EsService {
     private ElasticsearchTemplate elasticsearchTemplate;
     @Autowired
     private FilmRepository filmRepository;
+
+    @Value("${imageUrlPrefix}")
+    String imageUrlPrefix;
 
     public void createIndex(){
         elasticsearchTemplate.createIndex(Film.class);
@@ -97,7 +102,17 @@ public class EsService {
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)
                 .build();
-        return elasticsearchTemplate.queryForList(searchQuery,Film.class);
+
+        //增加图片Path前缀
+        List<Film> filmList = elasticsearchTemplate.queryForList(searchQuery,Film.class);
+        for( Film film : filmList){
+            if( !StringUtils.isEmpty(film.getImagePath())) {
+                String imagePath = film.getImagePath();
+                imagePath = imagePath.replaceFirst("./", "");
+                film.setImagePath(imageUrlPrefix + imagePath);
+            }
+        }
+        return filmList;
     }
 
 
@@ -115,8 +130,7 @@ public class EsService {
         suggestBuilder.addSuggestion(suggestName, completionSuggestionBuilder);
 
         SearchRequestBuilder requestBuilder = elasticsearchTemplate.getClient().prepareSearch(indexName).setTypes(typeName).suggest(suggestBuilder);
-        logger.info(requestBuilder.toString());
-        //        System.out.println(requestBuilder.toString());
+//        logger.info(requestBuilder.toString());
 
         SearchResponse response = requestBuilder.get();
         Suggest suggest = response.getSuggest();
@@ -148,10 +162,9 @@ public class EsService {
 
         List<String> suggests = Arrays.asList(suggestSet.toArray(new String[]{}));
 
-        suggests.forEach((s)->{
-//            System.out.println(s);
-            logger.info(s);
-        });
+//        suggests.forEach((s)->{
+//            logger.info(s);
+//        });
 
         return	 suggests;
     }
