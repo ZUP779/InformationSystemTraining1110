@@ -65,8 +65,8 @@ public class EsService {
         return films.iterator();
     }
 
-    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, double rating){
-        if( title == "" && summary == "" && tags == "" && actors == "" && rating == -1)
+    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, double lowRating, double toRating){
+        if( title == "" && summary == "" && tags == "" && actors == "" && lowRating == -1)
             return null;
 
         BoolQueryBuilder queryBuilder= QueryBuilders.boolQuery();
@@ -83,8 +83,10 @@ public class EsService {
         if( actors != null) {
             queryBuilder.must(QueryBuilders.matchQuery("actors", actors));
         }
-        if( rating != -1) {
-            queryBuilder.must(QueryBuilders.matchQuery("rating", rating));
+        if( lowRating != -1 && toRating != -1) {
+//            queryBuilder.must(QueryBuilders.matchQuery("rating", rating));
+//            System.out.println(lowRating+" " + toRating);
+            queryBuilder.must(QueryBuilders.rangeQuery("rating").from(lowRating).to(toRating));
         }
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)

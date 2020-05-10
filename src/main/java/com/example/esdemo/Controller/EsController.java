@@ -45,15 +45,14 @@ public class EsController {
                                 @ApiParam(name = "summary", value = "电影简介", required = false) @RequestParam(value = "summary", required = false) String summary,
                                 @ApiParam(name = "tags", value = "电影标签", required = false) @RequestParam(value = "tags", required = false) String tags,
                                 @ApiParam(name = "actors", value = "演员", required = false) @RequestParam(value = "actors", required = false) String actors,
-                                @ApiParam(name = "rating", value = "电影评分", required = false)@RequestParam(value = "rating", required = false, defaultValue = "-1") String rating){
+                                @ApiParam(name = "lowRating", value = "电影评分下界", required = false)@RequestParam(value = "lowRating", required = false, defaultValue = "-1") double lowRating,
+                                @ApiParam(name = "toRating", value = "电影评分上界", required = false)@RequestParam(value = "toRating", required = false, defaultValue = "-1") double toRating){
 //        System.out.println(title);
 //        System.out.println(summary);
 //        System.out.println(tags);
 //        System.out.println(actors);
-//        System.out.println(rating);
-        double ratingDouble = -1;
-        ratingDouble = Double.valueOf(rating);
-        return esService.findFilmsByMultiMatch(title, summary, tags, actors, ratingDouble);
+//        System.out.println(lowRating+" "+toRating);
+        return esService.findFilmsByMultiMatch(title, summary, tags, actors, lowRating, toRating);
     }
 
     @ApiOperation(value = "返回Suggest", httpMethod = "GET", notes = "根据用户输入的值返回Suggest，目前仅支持对titleSuggest字段的suggest")

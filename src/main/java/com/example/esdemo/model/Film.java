@@ -29,7 +29,7 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Long)
     private Long id;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String title;
 
     @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
@@ -53,28 +53,28 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Text)
     private String scoreRatio;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String tags;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String summary;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String director;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String author;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String actors;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String movieType;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String location;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String language;
 
     @Field(type = FieldType.Text)
@@ -83,7 +83,7 @@ public class Film  implements Serializable {
     @Field(type = FieldType.Integer)
     private int duration;
 
-    @Field(type = FieldType.Auto, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
+    @Field(type = FieldType.Text, analyzer = "ik_max_word",searchAnalyzer = "ik_max_word")
     private String anotherName;
 
 }

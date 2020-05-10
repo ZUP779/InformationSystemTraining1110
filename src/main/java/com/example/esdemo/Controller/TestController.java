@@ -1,8 +1,5 @@
 package com.example.esdemo.Controller;
 
-import com.example.esdemo.model.Film;
-import com.example.esdemo.model.TestFilm;
-import com.example.esdemo.repo.TestFilmRepo;
 import com.example.esdemo.service.EsService;
 import io.swagger.annotations.Api;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -33,20 +30,7 @@ public class TestController {
     private EsService esService;
 
     @Autowired
-    private TestFilmRepo testFilmRepo;
-
-    @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
-
-    @GetMapping("/test")
-    public void testCreateIndex(){
-        TestFilm t1 = new TestFilm("奥特曼","a a");
-        TestFilm t2 = new TestFilm("奥特之父","a a");
-        TestFilm t3 = new TestFilm("奥观海","a a");
-        testFilmRepo.save(t1);
-        testFilmRepo.save(t2);
-        testFilmRepo.save(t3);
-    }
 
     @GetMapping("/getTestSuggest")
     public List<String> getSuggest(){
