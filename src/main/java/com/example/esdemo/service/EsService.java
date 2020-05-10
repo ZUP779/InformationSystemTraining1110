@@ -65,7 +65,7 @@ public class EsService {
         return films.iterator();
     }
 
-    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, double lowRating, double toRating){
+    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, String author, String location, double lowRating, double toRating){
         if( title == "" && summary == "" && tags == "" && actors == "" && lowRating == -1)
             return null;
 
@@ -82,6 +82,12 @@ public class EsService {
         }
         if( actors != null) {
             queryBuilder.must(QueryBuilders.matchQuery("actors", actors));
+        }
+        if( author != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("author", author));
+        }
+        if( location != null) {
+            queryBuilder.must(QueryBuilders.matchQuery("location", location));
         }
         if( lowRating != -1 && toRating != -1) {
 //            queryBuilder.must(QueryBuilders.matchQuery("rating", rating));
