@@ -105,6 +105,7 @@ public class EsService {
 
         //增加图片Path前缀
         List<Film> filmList = elasticsearchTemplate.queryForList(searchQuery,Film.class);
+
         for( Film film : filmList){
             if( !StringUtils.isEmpty(film.getImagePath())) {
                 String imagePath = film.getImagePath();

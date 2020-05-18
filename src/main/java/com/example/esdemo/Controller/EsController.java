@@ -2,14 +2,15 @@ package com.example.esdemo.Controller;
 
 import com.example.esdemo.model.Film;
 import com.example.esdemo.service.EsService;
+import com.example.esdemo.service.HotSearchService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Author: ZUP779
@@ -24,6 +25,8 @@ public class EsController {
     @Autowired
     private EsService esService;
 
+    @Autowired
+    private HotSearchService hotSearchService;
 //    @GetMapping("/matchTitle")
 //    public Iterator<Film> findFilmsMatchTitle(@RequestParam String title){
 //        return esService.findFilmsMatchTitle(title);
@@ -47,13 +50,15 @@ public class EsController {
                                 @ApiParam(name = "actors", value = "演员", required = false) @RequestParam(value = "actors", required = false) String actors,
                                 @ApiParam(name = "author", value = "导演", required = false) @RequestParam(value = "author", required = false) String author,
                                 @ApiParam(name = "location",value = "地区", required = false) @RequestParam(value = "location", required = false) String location,
-                                @ApiParam(name = "lowRating", value = "电影评分下界", required = false)@RequestParam(value = "lowRating", required = false, defaultValue = "-1") double lowRating,
-                                @ApiParam(name = "toRating", value = "电影评分上界", required = false)@RequestParam(value = "toRating", required = false, defaultValue = "-1") double toRating){
+                                @ApiParam(name = "lowRating", value = "电影评分下界", required = false, example = "5.0")@RequestParam(value = "lowRating", required = false, defaultValue = "-1") double lowRating,
+                                @ApiParam(name = "toRating", value = "电影评分上界", required = false, example = "10.0")@RequestParam(value = "toRating", required = false, defaultValue = "-1") double toRating){
 //        System.out.println(title);
 //        System.out.println(summary);
 //        System.out.println(tags);
 //        System.out.println(actors);
 //        System.out.println(lowRating+" "+toRating);
+        if( title != null)
+            hotSearchService.searchAdd2HostSearch(title);
         return esService.findFilmsByMultiMatch(title, summary, tags, actors, author, location, lowRating, toRating);
     }
 
@@ -62,5 +67,16 @@ public class EsController {
     public List<String> getSuggest(@ApiParam(name = "suggestField", value = "suggest字段名", required = true, example = "titleSuggest") @RequestParam(value = "suggestField", required = true) String suggestField,
                                    @ApiParam(name = "suggestValue", value = "用户输入的值", required = true, example = "隐形") @RequestParam(value = "suggestValue", required = true)String suggestValue){
         return esService.getSuggest(suggestField,suggestValue);
+    }
+
+    @ApiOperation(value = "热门搜索", notes = "获取从start到end的元素，0表示第一个，-1表示最后一个,默认返回前五个,热度由高到低,热度保持一天",httpMethod = "GET")
+    @GetMapping("/hotSearch")
+    public Set<String> hotSearch(@RequestParam(value = "start", required = true, defaultValue = "0") long start,
+                                 @RequestParam(value = "end", required = true, defaultValue = "5") long end){
+        Set<String> ans = hotSearchService.getHotSearch(start, end);
+//        for( String str : ans){
+//            System.out.println(str);
+//        }
+        return ans;
     }
 }

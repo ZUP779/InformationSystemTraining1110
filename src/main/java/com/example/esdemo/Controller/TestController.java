@@ -10,9 +10,12 @@ import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -26,11 +29,18 @@ import java.util.Set;
 @Api(hidden = true)
 @RestController
 public class TestController {
+
     @Autowired
     private EsService esService;
 
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @GetMapping("/getTestSuggest")
     public List<String> getSuggest(){
@@ -95,5 +105,12 @@ public class TestController {
 
 //        esService.createIndex();
         esService.addCsv2Es("src/main/resources/test.csv",true,"UTF-8");
+    }
+
+    @GetMapping("/testRedis")
+    public void testRedis(){
+        stringRedisTemplate.opsForValue().set("db-type", "redis");
+        System.out.println(stringRedisTemplate.opsForValue().get("db-type"));
+        System.out.println(redisTemplate.opsForValue().get("db-type"));
     }
 }

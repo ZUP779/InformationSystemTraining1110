@@ -1,11 +1,15 @@
 package com.example.esdemo;
 
+import com.example.esdemo.util.DateUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * Author: ZUP779
@@ -19,8 +23,14 @@ public class Test {
         String fileUrl = "https://img3.doubanio.com/view/photo/s_ratio_poster/public/p2561439800.jpg";
         String downPath = "C:\\Life";
 
-        downUrlTxt(fileName, fileUrl, downPath);
+//        downUrlTxt(fileName, fileUrl, downPath);
 
+//        Date date = new Date();
+//        DateFormat df = DateFormat.getDateInstance();
+//        System.out.println(df.format(date));
+        Date date = new Date();
+        date = DateUtil.dateIncreaseByDay(date,-1);
+        System.out.println(DateUtil.dateToString(date, "yyyyMMdd"));
     }
 
     public static void downUrlTxt(String fileName, String fileUrl, String downPath) {
