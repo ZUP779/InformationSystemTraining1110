@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -24,15 +21,23 @@ public class HotSearchService {
     private final String hotSearchZSET = "esdemo:hotSearch";
 
     //热搜统计天数
-    private final int passDays = 1;
+    private final int passDays = 3;
 
     private final String dateFormat="yyyyMMdd";
 
-    public Set<String> getHotSearch(long start, long end) {
-        return redisTemplate.opsForZSet().reverseRange(hotSearchZSET+getCurrentDayString(), start, end);
+    public Set<String> getHotSearchFilmTitle(long start, long end) {
+        List<String> dates = getPassDaysString();
+
+        //使用一个随机的UUID做为redis生成的临时ZSET并集名称，防止并发下数据冲突
+        String destKey = UUID.randomUUID().toString();
+        redisTemplate.opsForZSet().unionAndStore(hotSearchZSET+getCurrentDayString(), dates, destKey);
+        Set<String> set = redisTemplate.opsForZSet().reverseRange(destKey, start, end);
+//        System.out.println(destKey);
+        redisTemplate.delete(destKey);
+        return set;
     }
 
-    public void searchAdd2HostSearch(String key) {
+    public void searchAdd2HostSearchFilmTitle(String key) {
         redisTemplate.opsForZSet().incrementScore(hotSearchZSET+getCurrentDayString(), key, 1);
 
         //经过passDays天后键过期
@@ -44,13 +49,14 @@ public class HotSearchService {
         return DateUtil.dateToString(date, dateFormat);
     }
 
-//    private List<String> getPassDaysString(){
-//        ArrayList<String> dates = new ArrayList<>();
-//        Date date = new Date();
-//        for( int i = 0; i < passDays; i ++){
-//            Date temp = DateUtil.dateIncreaseByDay(date, -i);
-//            dates.add(DateUtil.dateToString(temp, dateFormat));
-//        }
-//        return dates;
-//    }
+    //返回当前时间倒退passDays天内每天的时间格式化字符串，不包括当前天
+    private List<String> getPassDaysString(){
+        ArrayList<String> dates = new ArrayList<>();
+        Date date = new Date();
+        for( int i = 1; i < passDays; i ++){
+            Date temp = DateUtil.dateIncreaseByDay(date, -i);
+            dates.add(hotSearchZSET + DateUtil.dateToString(temp, dateFormat));
+        }
+        return dates;
+    }
 }

@@ -58,7 +58,7 @@ public class EsController {
 //        System.out.println(actors);
 //        System.out.println(lowRating+" "+toRating);
         if( title != null)
-            hotSearchService.searchAdd2HostSearch(title);
+            hotSearchService.searchAdd2HostSearchFilmTitle(title);
         return esService.findFilmsByMultiMatch(title, summary, tags, actors, author, location, lowRating, toRating);
     }
 
@@ -69,11 +69,11 @@ public class EsController {
         return esService.getSuggest(suggestField,suggestValue);
     }
 
-    @ApiOperation(value = "热门搜索", notes = "获取从start到end的元素，0表示第一个，-1表示最后一个,默认返回前五个,热度由高到低,热度保持一天",httpMethod = "GET")
-    @GetMapping("/hotSearch")
-    public Set<String> hotSearch(@RequestParam(value = "start", required = true, defaultValue = "0") long start,
-                                 @RequestParam(value = "end", required = true, defaultValue = "5") long end){
-        Set<String> ans = hotSearchService.getHotSearch(start, end);
+    @ApiOperation(value = "热门搜索电影名称", notes = "获取从start到end的元素，下标从0开始，-1表示最后一个,默认返回前五个,热度由高到低,热度保持三天",httpMethod = "GET")
+    @GetMapping("/hotSearchFilmTitle")
+        public Set<String> hotSearchFilmTitle(@RequestParam(value = "start", required = true, defaultValue = "0") long start,
+        @RequestParam(value = "end", required = true, defaultValue = "5") long end){
+            Set<String> ans = hotSearchService.getHotSearchFilmTitle(start, end);
 //        for( String str : ans){
 //            System.out.println(str);
 //        }
