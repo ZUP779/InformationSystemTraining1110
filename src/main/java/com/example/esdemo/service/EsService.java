@@ -2,11 +2,11 @@ package com.example.esdemo.service;
 
 import com.example.esdemo.model.Film;
 import com.example.esdemo.repo.FilmRepository;
+import org.apache.lucene.search.FuzzyQuery;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestion;
@@ -75,9 +75,10 @@ public class EsService {
             return null;
 
         BoolQueryBuilder queryBuilder= QueryBuilders.boolQuery();
-
+        FuzzyQueryBuilder fuzzyTitle= null;
         if( title != null) {
-            queryBuilder.must(QueryBuilders.matchQuery("title", title));
+//            queryBuilder.must(QueryBuilders.matchQuery("title", title));
+            fuzzyTitle = QueryBuilders.fuzzyQuery("title",title).fuzziness(Fuzziness.AUTO);
         }
         if( summary != null) {
             queryBuilder.must(QueryBuilders.matchQuery("summary", summary));
@@ -95,12 +96,13 @@ public class EsService {
             queryBuilder.must(QueryBuilders.matchQuery("location", location));
         }
         if( lowRating != -1 && toRating != -1) {
-//            queryBuilder.must(QueryBuilders.matchQuery("rating", rating));
 //            System.out.println(lowRating+" " + toRating);
             queryBuilder.must(QueryBuilders.rangeQuery("rating").from(lowRating).to(toRating));
         }
+
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)
+                .withQuery(fuzzyTitle)
                 .build();
 
         //增加图片Path前缀
@@ -118,8 +120,6 @@ public class EsService {
 
 
     public List<String> getSuggest(String suggestField, String suggestValue){
-//        String suggestField = "name";
-//        String suggestValue = "奥";
         Integer suggestMaxCount = 10;
 
         String suggestName = "FilmSuggest";
@@ -141,7 +141,6 @@ public class EsService {
         if (suggest != null) {
             Suggest.Suggestion result = suggest.getSuggestion(suggestName);//获取suggest,name任意string
             for (Object term : result.getEntries()) {
-
                 if (term instanceof CompletionSuggestion.Entry) {
                     CompletionSuggestion.Entry item = (CompletionSuggestion.Entry) term;
                     if (!item.getOptions().isEmpty()) {

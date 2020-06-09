@@ -41,60 +41,60 @@ public class TestController {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-
-    @GetMapping("/getTestSuggest")
-    public List<String> getSuggest(){
-        String suggestField = "name";
-        String suggestValue = "奥";
-        Integer suggestMaxCount = 10;
-
-        String suggestName = "TestFilmSuggest";
-        String indexName = "films";
-        String typeName = "_doc";
-
-        CompletionSuggestionBuilder completionSuggestionBuilder = new CompletionSuggestionBuilder(suggestField).prefix(suggestValue).size(suggestMaxCount);
-        SuggestBuilder suggestBuilder = new SuggestBuilder();
-        suggestBuilder.addSuggestion(suggestName, completionSuggestionBuilder);
-
-        SearchRequestBuilder requestBuilder = elasticsearchTemplate.getClient().prepareSearch(indexName).setTypes(typeName).suggest(suggestBuilder);
-        System.out.println(requestBuilder.toString());
-
-        SearchResponse response = requestBuilder.get();
-        Suggest suggest = response.getSuggest();
-
-        Set<String> suggestSet = new HashSet<>();
-        int maxSuggest = 0;
-        if (suggest != null) {
-            Suggest.Suggestion result = suggest.getSuggestion(suggestName);//获取suggest,name任意string
-            for (Object term : result.getEntries()) {
-
-                if (term instanceof CompletionSuggestion.Entry) {
-                    CompletionSuggestion.Entry item = (CompletionSuggestion.Entry) term;
-                    if (!item.getOptions().isEmpty()) {
-                        //若item的option不为空,循环遍历
-                        for (CompletionSuggestion.Entry.Option option : item.getOptions()) {
-                            String tip = option.getText().toString();
-                            if (!suggestSet.contains(tip)) {
-                                suggestSet.add(tip);
-                                ++maxSuggest;
-                            }
-                        }
-                    }
-                }
-                if (maxSuggest >= suggestMaxCount) {
-                    break;
-                }
-            }
-        }
-
-        List<String> suggests = Arrays.asList(suggestSet.toArray(new String[]{}));
-
-        suggests.forEach((s)->{
-            System.out.println(s);
-        });
-
-		return	 suggests;
-    }
+//
+//    @GetMapping("/getTestSuggest")
+//    public List<String> getSuggest(){
+//        String suggestField = "name";
+//        String suggestValue = "奥";
+//        Integer suggestMaxCount = 10;
+//
+//        String suggestName = "TestFilmSuggest";
+//        String indexName = "films";
+//        String typeName = "_doc";
+//
+//        CompletionSuggestionBuilder completionSuggestionBuilder = new CompletionSuggestionBuilder(suggestField).prefix(suggestValue).size(suggestMaxCount);
+//        SuggestBuilder suggestBuilder = new SuggestBuilder();
+//        suggestBuilder.addSuggestion(suggestName, completionSuggestionBuilder);
+//
+//        SearchRequestBuilder requestBuilder = elasticsearchTemplate.getClient().prepareSearch(indexName).setTypes(typeName).suggest(suggestBuilder);
+//        System.out.println(requestBuilder.toString());
+//
+//        SearchResponse response = requestBuilder.get();
+//        Suggest suggest = response.getSuggest();
+//
+//        Set<String> suggestSet = new HashSet<>();
+//        int maxSuggest = 0;
+//        if (suggest != null) {
+//            Suggest.Suggestion result = suggest.getSuggestion(suggestName);//获取suggest,name任意string
+//            for (Object term : result.getEntries()) {
+//
+//                if (term instanceof CompletionSuggestion.Entry) {
+//                    CompletionSuggestion.Entry item = (CompletionSuggestion.Entry) term;
+//                    if (!item.getOptions().isEmpty()) {
+//                        //若item的option不为空,循环遍历
+//                        for (CompletionSuggestion.Entry.Option option : item.getOptions()) {
+//                            String tip = option.getText().toString();
+//                            if (!suggestSet.contains(tip)) {
+//                                suggestSet.add(tip);
+//                                ++maxSuggest;
+//                            }
+//                        }
+//                    }
+//                }
+//                if (maxSuggest >= suggestMaxCount) {
+//                    break;
+//                }
+//            }
+//        }
+//
+//        List<String> suggests = Arrays.asList(suggestSet.toArray(new String[]{}));
+//
+//        suggests.forEach((s)->{
+//            System.out.println(s);
+//        });
+//
+//		return	 suggests;
+//    }
 
     @GetMapping("/create")
     public void testAddData(){
