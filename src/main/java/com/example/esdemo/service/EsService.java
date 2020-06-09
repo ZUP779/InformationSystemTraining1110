@@ -78,10 +78,10 @@ public class EsService {
             return null;
 
         BoolQueryBuilder queryBuilder= QueryBuilders.boolQuery();
-        FuzzyQueryBuilder fuzzyTitle= null;
+//        FuzzyQueryBuilder fuzzyTitle= null;
         if( title != null) {
-//            queryBuilder.must(QueryBuilders.matchQuery("title", title));
-            fuzzyTitle = QueryBuilders.fuzzyQuery("title",title).fuzziness(Fuzziness.AUTO);
+            queryBuilder.must(QueryBuilders.matchQuery("title", title));
+//            fuzzyTitle = QueryBuilders.fuzzyQuery("title",title).fuzziness(Fuzziness.AUTO);
         }
         if( summary != null) {
             queryBuilder.must(QueryBuilders.matchQuery("summary", summary));
@@ -107,7 +107,7 @@ public class EsService {
 
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)
-                .withQuery(fuzzyTitle)
+//                .withQuery(fuzzyTitle)
                 .withPageable(pageable)
                 .build();
 
