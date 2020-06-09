@@ -15,6 +15,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -70,7 +73,7 @@ public class EsService {
         return films.iterator();
     }
 
-    public List<Film> findFilmsByMultiMatch(String title, String summary, String tags, String actors, String author, String location, double lowRating, double toRating){
+    public Page<Film> findFilmsByMultiMatch(int page, int size, String title, String summary, String tags, String actors, String author, String location, double lowRating, double toRating){
         if( title == "" && summary == "" && tags == "" && actors == "" && lowRating == -1)
             return null;
 
@@ -100,22 +103,25 @@ public class EsService {
             queryBuilder.must(QueryBuilders.rangeQuery("rating").from(lowRating).to(toRating));
         }
 
+        Pageable pageable = PageRequest.of(page, size);
+
         SearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withQuery(queryBuilder)
                 .withQuery(fuzzyTitle)
+                .withPageable(pageable)
                 .build();
 
         //增加图片Path前缀
-        List<Film> filmList = elasticsearchTemplate.queryForList(searchQuery,Film.class);
+        Page<Film> filmPages = elasticsearchTemplate.queryForPage(searchQuery,Film.class);
 
-        for( Film film : filmList){
+        for( Film film : filmPages){
             if( !StringUtils.isEmpty(film.getImagePath())) {
                 String imagePath = film.getImagePath();
                 imagePath = imagePath.replaceFirst("./", "");
                 film.setImagePath(imageUrlPrefix + imagePath);
             }
         }
-        return filmList;
+        return filmPages;
     }
 
 

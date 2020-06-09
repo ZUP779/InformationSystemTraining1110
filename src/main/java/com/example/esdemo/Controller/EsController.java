@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,7 +45,9 @@ public class EsController {
 
     @ApiOperation(value = "根据相关信息查找符合的film", httpMethod = "GET", notes = "根据相关信息查找符合的film")
     @GetMapping("/match")
-    public List<Film> findFilms(@ApiParam(name = "title", value = "电影名", required = false) @RequestParam(value = "title", required = false) String title,
+    public Page<Film> findFilms(@ApiParam(name = "page", value = "开始页，从0开始", required = false) @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                @ApiParam(name = "size", value = "页大小", required = false) @RequestParam(value = "size", required = false, defaultValue = "10") int size,
+                                @ApiParam(name = "title", value = "电影名", required = false) @RequestParam(value = "title", required = false) String title,
                                 @ApiParam(name = "summary", value = "电影简介", required = false) @RequestParam(value = "summary", required = false) String summary,
                                 @ApiParam(name = "tags", value = "电影标签", required = false) @RequestParam(value = "tags", required = false) String tags,
                                 @ApiParam(name = "actors", value = "演员", required = false) @RequestParam(value = "actors", required = false) String actors,
@@ -59,7 +62,7 @@ public class EsController {
 //        System.out.println(lowRating+" "+toRating);
         if( title != null)
             hotSearchService.searchAdd2HostSearchFilmTitle(title);
-        return esService.findFilmsByMultiMatch(title, summary, tags, actors, author, location, lowRating, toRating);
+        return esService.findFilmsByMultiMatch(page, size, title, summary, tags, actors, author, location, lowRating, toRating);
     }
 
     @ApiOperation(value = "返回Suggest", httpMethod = "GET", notes = "根据用户输入的值返回Suggest，目前仅支持对titleSuggest字段的suggest")
